@@ -8,23 +8,23 @@
       </h3>
       <div class="content">
         <label>手机号:</label>
-        <input type="text" placeholder="请输入你的手机号">
+        <input type="text" placeholder="请输入你的手机号" v-model="form.loginForm">
         <span class="error-msg">错误提示信息</span>
       </div>
       <div class="content">
-        <label>验证码:</label>
-        <input type="text" placeholder="请输入验证码">
-        <img ref="code" src="http://182.92.128.115/api/user/passport/code" alt="code">
+        <label >验证码:</label>
+        <input type="text" placeholder="请输入验证码" v-model="form.yzms" >
+        <span @click="yzm">发起验证</span>
         <span class="error-msg">错误提示信息</span>
       </div>
-      <div class="content">
+      <div class="content" >
         <label>登录密码:</label>
-        <input type="text" placeholder="请输入你的登录密码">
+        <input type="text" placeholder="请输入你的登录密码" v-model="form.passworda">
         <span class="error-msg">错误提示信息</span>
       </div>
-      <div class="content">
+      <div class="content" >
         <label>确认密码:</label>
-        <input type="text" placeholder="请输入确认密码">
+        <input type="text" placeholder="请输入确认密码" v-model="form.qrpassword">
         <span class="error-msg">错误提示信息</span>
       </div>
       <div class="controls">
@@ -33,7 +33,7 @@
         <span class="error-msg">错误提示信息</span>
       </div>
       <div class="btn">
-        <button>完成注册</button>
+        <button  @click="wczc">完成注册</button>
       </div>
     </div>
 
@@ -58,7 +58,47 @@
 
 <script>
   export default {
-    name: 'Register'
+    name: 'Register',
+	data(){
+		return{
+			// loginForm: {
+			// 	username: 'admin',
+			// 	password: '123456'
+			// },
+			
+			form:{
+				loginForm:'',
+				yzms:'',
+				passworda:'',
+				qrpassword:'',
+			},
+		}
+	},
+	mounted(){
+		
+	},
+	methods:{
+		yzm(){
+			this.$http.get('/api/user/passport/sendCode/'+this.form.loginForm).then(res=>{
+				alert(res.data)
+			})
+		},
+		wczc(){
+			this.$http.post('/api/user/passport/register',{
+				phone:this.form.loginForm,
+				code:this.form.yzms,
+				password:this.form.passworda,
+			}).then(res=>{
+				console.log(res)
+				if(res.code===200){
+					alert('注册成功')
+					// this.$router.push('./Login/index.vue')
+				}else{
+					alert('注册失败')
+				}
+			})
+		},
+	},
   }
 </script>
 
